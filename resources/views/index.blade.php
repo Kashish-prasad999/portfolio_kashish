@@ -13,6 +13,7 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Site Icons -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon" />
@@ -169,7 +170,7 @@
                         </p>
 
                         <a href="#" class="sim-btn btn-hover-new" id="viewButton" data-text="View CV"><span>View CV</span></a>
-                        <a href="#" class="sim-btn btn-hover-new" id="downloadButton" data-text="Download CV"><span>Download CV</span></a>
+                        {{-- <a href="#" class="sim-btn btn-hover-new" id="downloadButton" data-text="Download CV"><span>Download CV</span></a> --}}
                     </div><!-- end messagebox -->
                 </div><!-- end col -->
 
@@ -517,24 +518,25 @@
                     <div class="contact_form">
                         <div id="message"></div>
                         <form id="contactForm" name="sentMessage" novalidate="novalidate">
+                            @csrf
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<input class="form-control" id="name" type="text" placeholder="Your Name" required="required" data-validation-required-message="Please enter your name.">
+										<input class="form-control" id="name" name="name" type="text" placeholder="Your Name" required="required" data-validation-required-message="Please enter your name.">
 										<p class="help-block text-danger"></p>
 									</div>
 									<div class="form-group">
-										<input class="form-control" id="email" type="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email address.">
+										<input class="form-control" id="email" name="email" type="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email address.">
 										<p class="help-block text-danger"></p>
 									</div>
 									<div class="form-group">
-										<input class="form-control" id="phone" type="tel" placeholder="Your Phone" required="required" data-validation-required-message="Please enter your phone number.">
+										<input class="form-control" id="phone" name="phone" type="tel" placeholder="Your Phone" required="required" data-validation-required-message="Please enter your phone number.">
 										<p class="help-block text-danger"></p>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<textarea class="form-control" id="message" placeholder="Your Message" required="required" data-validation-required-message="Please enter a message."></textarea>
+										<textarea class="form-control" id="message" name="message" placeholder="Your Message" required="required" data-validation-required-message="Please enter a message."></textarea>
 										<p class="help-block text-danger"></p>
 									</div>
 								</div>
@@ -595,23 +597,91 @@
     
     $(document).on('click', '.download-ss-btn', function () {
 
-$.ajax({
-    type: "POST",
-    url: 'http://127.0.0.1:8080/utils/json/pdfGen',
-    data: {
-        data: JSON.stringify(jsonData)
-    }
+        $.ajax({
+            type: "POST",
+            url: 'http://127.0.0.1:8080/utils/json/pdfGen',
+            data: {
+                data: JSON.stringify(jsonData)
+            }
 
-}).done(function (data) {
-    var blob = new Blob([data]);
-    var link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = "Sample.pdf";
-    link.click();
-});
+        }).done(function (data) {
+            var blob = new Blob([data]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Sample.pdf";
+            link.click();
+        });
+    });
 
+    // $(document).ready(function() {
 
-});
+    //     $('#contactForm').bootstrapValidator({
+    //         // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+    //         feedbackIcons: {
+    //             valid: 'fa fa-check',
+    //             invalid: 'fa fa-times',
+    //             validating: 'fa fa-refresh'
+    //         },
+    //         fields: {
+    //             name: {
+    //                 validators: {
+    //                         stringLength: {
+    //                         min: 2,
+    //                     },
+    //                         notEmpty: {
+    //                         message: 'Name is required'
+    //                     }
+    //                 }
+    //             },
+    //             email: {
+    //                 validators: {
+    //                     notEmpty: {
+    //                         message: 'Email is required'
+    //                     },
+    //                     emailAddress: {
+    //                         message: 'Enter a valid email address'
+    //                     }
+    //                 }
+    //             },
+    //             // message: {
+    //             //     validators: {
+    //             //           stringLength: {
+    //             //             min: 10,
+    //             //             max: 1000,
+    //             //             message:'Votre message doit faire plus de 10 caractères et moins de 1000.'
+    //             //         },
+    //             //         notEmpty: {
+    //             //             message: 'Veuillez indiquer votre message'
+    //             //         }
+    //             //         }
+    //             //     },
+    //             phone: {
+    //                 validators: {
+    //                         stringLength: {
+    //                         min: 10,
+    //                     },
+    //                         notEmpty: {
+    //                         message: 'Phone is required'
+    //                     }
+    //                 }
+    //             }
+    //     }}).on('success.form.bv', function (e) {
+    //         e.preventDefault();
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "{{ route('store') }}",
+    //             data: formData,
+    //             dataType: "json",
+    //             encode: true,
+    //             success: function(data){
+    //                 if(data == "1")
+    //                     $('#message').html("<h2>Contact form submitted successfully").append("<p>We will be in touch soon.</p>").hide().fadeIn("slow");
+    //                 else
+    //                     console.log("Error");
+    //             }
+    //         });
+    //     });
+    // });
 
 </script>
 </body>

@@ -20,13 +20,17 @@ $(function() {
       $this = $("#sendMessageButton");
       $this.prop("disabled", true); // Disable submit button until AJAX call is complete to prevent duplicate messages
       $.ajax({
-        url: "././mail/contact_me.php",
+        // url: '{{ route("store") }}',
+        url: '/store',
         type: "POST",
         data: {
           name: name,
           phone: phone,
           email: email,
           message: message
+        },
+         headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         cache: false,
         success: function() {
